@@ -314,6 +314,10 @@
   function openFlap() {
     hapticFeedback([10]);
     envelopeFlap.classList.add('open');
+    // Change z-index after the flap is halfway open (600ms of the 1200ms transition)
+    setTimeout(() => {
+      envelopeFlap.style.zIndex = '1';
+    }, 600);
   }
 
   // --- PHASE 3: Card rises ---
@@ -365,6 +369,8 @@
     scrollIndicator.classList.remove('visible');
     hapticFeedback([12]);
 
+    document.body.style.overflow = 'hidden'; // Disable scroll during transition!
+
     expandCard();
     setTimeout(() => fadeAndReveal(), 1000);
   }
@@ -415,6 +421,7 @@
     setTimeout(() => {
       landingSection.classList.add('hide');
       envelopeCard.style.display = 'none';
+      document.body.style.overflow = 'auto'; // Re-enable scrolling!
     }, 1200);
   }
 
@@ -509,7 +516,7 @@
   contentObserver.observe(mainContent, { attributes: true, attributeFilter: ['class'] });
 
   // ========== COUNTDOWN TIMER ==========
-  const weddingDate = new Date('2026-08-23T09:00:00');
+  const weddingDate = new Date('2026-08-23T04:30:00');
 
   function updateCountdown() {
     const now = new Date();
