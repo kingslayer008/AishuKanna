@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Wedding Invitation — You're Cordially Invited</title>
+  <meta name="description" content="Join us as we celebrate our love and begin our forever. Wedding & Reception Invitation." />
+  <meta property="og:title" content="Wedding Invitation — You're Cordially Invited" />
+  <meta property="og:description" content="Join us as we celebrate our love and begin our forever." />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+
+  <!-- LOADING SCREEN -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-ring"></div>
+    <div class="loading-text">Preparing your invitation...</div>
+  </div>
+
+  <!-- PARTICLE CANVAS -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- SCREEN FLASH OVERLAY -->
+  <div class="screen-flash" id="screenFlash"></div>
+
+  <!-- ENVELOPE SHAKE CONTAINER -->
+  <div class="envelope-shake" id="envelopeShake"></div>
+
+  <!-- MUSIC TOGGLE -->
+  <button class="music-toggle" id="musicToggle" aria-label="Toggle music">
+    <div class="bars">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+  </button>
+
+  <!-- ========== LANDING SECTION — PHOTOREALISTIC 3D ENVELOPE ========== -->
+  <section class="landing-section" id="landingSection">
+
+    <!-- 3D Envelope -->
+    <div class="envelope-wrapper" id="envelopeWrapper">
+      <div class="envelope" id="envelope">
+
+        <!-- Envelope Flap (the triangular top) -->
+        <div class="envelope-flap" id="envelopeFlap">
+          <div class="flap-front"></div>
+          <div class="flap-back"></div>
+        </div>
+
+        <!-- Photorealistic Wax Seal -->
+        <div class="wax-seal" id="waxSeal">
+          <img src="images/wax-seal.png" alt="Wax Seal" class="wax-seal-img" />
+          <div class="wax-seal-glow"></div>
+        </div>
+
+        <!-- The Card/Letter inside the envelope -->
+        <div class="envelope-card" id="envelopeCard">
+          <img src="images/invitation-card.png" alt="Invitation" class="card-bg-img" />
+          <div class="card-content">
+            <div class="card-ornament-top">❦</div>
+            <p class="card-pretext">You are cordially invited to</p>
+            <h2 class="card-names">Bride <span>&</span> Groom</h2>
+            <p class="card-subtitle">Wedding Celebration</p>
+            <div class="card-date">August 23, 2026</div>
+            <div class="card-ornament-bottom">✦ ✦ ✦</div>
+          </div>
+        </div>
+
+        <!-- Envelope Body (back panel — uses real image) -->
+        <div class="envelope-body">
+          <img src="images/envelope-body.png" alt="Envelope" class="envelope-body-img" />
+          <div class="envelope-shadow-left"></div>
+          <div class="envelope-shadow-right"></div>
+        </div>
+
+        <!-- Envelope Front (bottom fold) -->
+        <div class="envelope-front" id="envelopeFront"></div>
+
+      </div>
+    </div>
+
+    <!-- Tap to open text -->
+    <p class="tap-text" id="tapText">
+      <span>✦ Tap the seal to open ✦</span>
+    </p>
+
+    <!-- Seal break particle container -->
+    <div class="seal-particles" id="sealParticles"></div>
+
+  </section>
+
+  <!-- SCROLL INDICATOR -->
+  <div class="scroll-indicator" id="scrollIndicator">
+    <span class="scroll-indicator-text">Scroll Down</span>
+    <div class="scroll-mouse"></div>
+    <div class="scroll-arrows">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <!-- ========== MAIN CONTENT (HIDDEN UNTIL ENVELOPE OPENS) ========== -->
+  <div class="main-content" id="mainContent">
+
+    <!-- HERO / WELCOME SECTION -->
+    <section class="hero-section section" id="heroSection">
+      <div class="section-inner">
+        <img src="images/floral-decoration.png" alt="Floral decoration" class="hero-floral-top reveal reveal-scale" />
+        <p class="hero-pre-text reveal reveal-delay-1">Together with their families</p>
+        <h1 class="hero-names reveal reveal-delay-2">
+          Bride
+          <span class="hero-ampersand">&</span>
+          Groom
+        </h1>
+        <p class="hero-tagline reveal reveal-delay-3">Request the pleasure of your company</p>
+        <div class="hero-date-badge reveal reveal-delay-4">August 23, 2026</div>
+        <img src="images/couple-illustration.png" alt="Couple" class="hero-couple-img reveal reveal-delay-5" />
+      </div>
+    </section>
+
+    <!-- COUNTDOWN SECTION -->
+    <section class="countdown-section section" id="countdownSection">
+      <div class="section-inner">
+        <p class="section-subtitle reveal">Counting Down To</p>
+        <h2 class="section-title reveal reveal-delay-1">The Big Day</h2>
+        <div class="ornament-divider reveal reveal-delay-2">
+          <span class="ornament-line"></span>
+          <span class="ornament-icon">♥</span>
+          <span class="ornament-line"></span>
+        </div>
+        <div class="countdown-grid">
+          <div class="countdown-item reveal reveal-delay-1">
+            <span class="countdown-number" id="countDays">00</span>
+            <span class="countdown-label">Days</span>
+          </div>
+          <div class="countdown-item reveal reveal-delay-2">
+            <span class="countdown-number" id="countHours">00</span>
+            <span class="countdown-label">Hours</span>
+          </div>
+          <div class="countdown-item reveal reveal-delay-3">
+            <span class="countdown-number" id="countMinutes">00</span>
+            <span class="countdown-label">Minutes</span>
+          </div>
+          <div class="countdown-item reveal reveal-delay-4">
+            <span class="countdown-number" id="countSeconds">00</span>
+            <span class="countdown-label">Seconds</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COUPLE SECTION -->
+    <section class="couple-section section" id="coupleSection">
+      <div class="section-inner">
+        <p class="section-subtitle reveal">About</p>
+        <h2 class="section-title reveal reveal-delay-1">The Couple</h2>
+        <div class="ornament-divider reveal reveal-delay-2">
+          <span class="ornament-line"></span>
+          <span class="ornament-icon">✦</span>
+          <span class="ornament-line"></span>
+        </div>
+
+        <div class="couple-card reveal-left">
+          <img src="images/couple-illustration.png" alt="Bride" class="couple-img" />
+          <h3 class="couple-name">The Bride</h3>
+          <p class="couple-relation">Bride</p>
+          <p class="couple-parents">
+            Daughter of<br />
+            <strong>Mr. & Mrs. [Father's Name]</strong>
+          </p>
+        </div>
+
+        <div class="couple-heart-divider reveal-scale">
+          <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        </div>
+
+        <div class="couple-card reveal-right">
+          <img src="images/couple-illustration.png" alt="Groom" class="couple-img" />
+          <h3 class="couple-name">The Groom</h3>
+          <p class="couple-relation">Groom</p>
+          <p class="couple-parents">
+            Son of<br />
+            <strong>Mr. & Mrs. [Father's Name]</strong>
+          </p>
+        </div>
+      </div>
+    </section>
+
+
+
+    <!-- EVENTS SECTION -->
+    <section class="events-section section" id="eventsSection">
+      <div class="section-inner">
+        <p class="section-subtitle reveal">Save The Date</p>
+        <h2 class="section-title reveal reveal-delay-1">Wedding Events</h2>
+        <div class="ornament-divider reveal reveal-delay-2">
+          <span class="ornament-line"></span>
+          <span class="ornament-icon">✧</span>
+          <span class="ornament-line"></span>
+        </div>
+
+        <!-- WEDDING CEREMONY -->
+        <div class="event-card reveal">
+          <div class="event-img-wrapper">
+            <img src="images/wedding-venue.png" alt="Wedding Ceremony Venue" class="event-img" />
+            <span class="event-type-badge">Ceremony</span>
+          </div>
+          <div class="event-content">
+            <h3 class="event-name">Wedding Ceremony</h3>
+            <div class="event-detail">
+              <svg class="event-detail-icon" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
+              <div class="event-detail-text">
+                <strong>Sunday, August 23, 2026</strong><br />
+                9:00 AM — 12:00 PM
+              </div>
+            </div>
+            <div class="event-detail">
+              <svg class="event-detail-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              <div class="event-detail-text">
+                <strong>Grand Wedding Hall</strong><br />
+                123 Venue Street, City, State
+              </div>
+            </div>
+            <a href="https://maps.google.com" target="_blank" class="event-map-btn" id="weddingMapBtn">
+              <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+              View on Map
+            </a>
+          </div>
+        </div>
+
+        <!-- RECEPTION -->
+        <div class="event-card reveal reveal-delay-2">
+          <div class="event-img-wrapper">
+            <img src="images/reception-venue.png" alt="Reception Venue" class="event-img" />
+            <span class="event-type-badge">Reception</span>
+          </div>
+          <div class="event-content">
+            <h3 class="event-name">Grand Reception</h3>
+            <div class="event-detail">
+              <svg class="event-detail-icon" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
+              <div class="event-detail-text">
+                <strong>Sunday, August 23, 2026</strong><br />
+                6:00 PM — 11:00 PM
+              </div>
+            </div>
+            <div class="event-detail">
+              <svg class="event-detail-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              <div class="event-detail-text">
+                <strong>Royal Banquet Hall</strong><br />
+                456 Reception Avenue, City, State
+              </div>
+            </div>
+            <a href="https://maps.google.com" target="_blank" class="event-map-btn" id="receptionMapBtn">
+              <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+              View on Map
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+
+
+    <!-- WISHES SECTION -->
+    <section class="wishes-section section" id="wishesSection">
+      <div class="section-inner">
+        <p class="section-subtitle reveal">Send Love</p>
+        <h2 class="section-title reveal reveal-delay-1">Best Wishes</h2>
+        <div class="ornament-divider reveal reveal-delay-2">
+          <span class="ornament-line"></span>
+          <span class="ornament-icon">🕊️</span>
+          <span class="ornament-line"></span>
+        </div>
+
+        <form class="wishes-form reveal reveal-delay-3" id="wishesForm">
+          <div class="wishes-input-row">
+            <input type="text" id="wishName" placeholder="Your Name" required />
+          </div>
+          <div class="wishes-input-row">
+            <textarea class="wishes-textarea" id="wishMessage" placeholder="Write your heartfelt wishes..." required></textarea>
+          </div>
+          <button type="submit" class="wishes-send-btn" id="wishesSendBtn">Send Wishes ✨</button>
+        </form>
+
+        <div class="wishes-loading" id="wishesLoading">
+          <div class="wishes-spinner"></div>
+          <span>Loading wishes...</span>
+        </div>
+        <div class="wishes-empty" id="wishesEmpty" style="display:none;">Be the first to send your wishes!</div>
+        <div class="wishes-list" id="wishesList"></div>
+        <div class="wishes-pagination" id="wishesPagination" style="display:none;">
+          <button class="wishes-page-btn" id="wishesPrev" disabled>&#8592; Prev</button>
+          <span class="wishes-page-info" id="wishesPageInfo">Page 1 of 1</span>
+          <button class="wishes-page-btn" id="wishesNext">Next &#8594;</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER SECTION -->
+    <footer class="footer-section section" id="footerSection">
+      <div class="section-inner">
+        <div class="reveal">
+          <h2 class="footer-names">Bride & Groom</h2>
+          <p class="footer-date">August 23, 2026</p>
+        </div>
+        <p class="footer-message reveal reveal-delay-1">
+          "And they lived happily ever after..."<br /><br />
+          We can't wait to celebrate this special day with you. Your presence would mean the world to us.
+        </p>
+        <div class="footer-hearts reveal reveal-delay-2">
+          <span>💛</span>
+          <span>❤️</span>
+          <span>💛</span>
+        </div>
+        <p class="footer-credits reveal reveal-delay-3">
+          Made with ♥ for our special day
+        </p>
+      </div>
+    </footer>
+
+  </div><!-- /main-content -->
+
+
+
+  <script src="index.js"></script>
+</body>
+</html>
