@@ -24,11 +24,16 @@ function writeLocal(data) {
 }
 
 async function getStoreInstance() {
-  const isLocal = !process.env.NETLIFY || !process.env.SITE_ID;
+  const isLocal = process.env.NETLIFY_DEV === 'true' || !process.env.AWS_LAMBDA_FUNCTION_NAME;
   if (isLocal) return null;
 
-  const { getStore } = require('@netlify/blobs');
-  return getStore({ name: 'wishes', siteID: process.env.SITE_ID });
+  try {
+    const { getStore } = require('@netlify/blobs');
+    return getStore('wishes');
+  } catch (e) {
+    console.error("Failed to load Netlify Blobs:", e);
+    return null;
+  }
 }
 
 async function readWishes(store) {

@@ -4,7 +4,7 @@
   'use strict';
 
   // ========== DOM REFERENCES ==========
-  const loadingScreen = document.getElementById('loadingScreen');
+
   const landingSection = document.getElementById('landingSection');
   const envelopeWrapper = document.getElementById('envelopeWrapper');
   const envelope = document.getElementById('envelope');
@@ -25,15 +25,7 @@
   let envelopeOpened = false;
   let musicPlaying = false;
 
-  // ========== LOADING SCREEN ==========
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      loadingScreen.classList.add('hidden');
-      setTimeout(() => {
-        loadingScreen.style.display = 'none';
-      }, 800);
-    }, 1500);
-  });
+
 
   // ========== PARTICLE SYSTEM ==========
   const ctx = particlesCanvas.getContext('2d');
