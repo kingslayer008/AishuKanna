@@ -88,7 +88,7 @@ a {
   height: 44px;
   border-radius: 50%;
   border: 1px solid var(--color-gold);
-  background: rgba(13, 10, 7, 0.8);
+  background: rgba(13, 10, 7, 0.85);
   backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
@@ -96,12 +96,6 @@ a {
   cursor: pointer;
   transition: var(--transition-smooth);
   color: var(--color-gold);
-  font-size: 18px;
-  opacity: 0;
-  transform: scale(0);
-}
-
-.music-toggle.visible {
   opacity: 1;
   transform: scale(1);
 }
@@ -126,19 +120,32 @@ a {
   transition: height 0.3s ease;
 }
 
+/* Playing — animated bars */
 .music-toggle.playing .bar {
   animation: soundBars 0.8s ease-in-out infinite alternate;
 }
 
-.music-toggle.playing .bar:nth-child(1) { animation-delay: 0s; height: 6px; }
+.music-toggle.playing .bar:nth-child(1) { animation-delay: 0s;   height: 6px; }
 .music-toggle.playing .bar:nth-child(2) { animation-delay: 0.2s; height: 12px; }
 .music-toggle.playing .bar:nth-child(3) { animation-delay: 0.4s; height: 8px; }
 .music-toggle.playing .bar:nth-child(4) { animation-delay: 0.1s; height: 14px; }
 
-.music-toggle:not(.playing) .bar { height: 8px; }
+/* Muted — flat bars + small X badge */
+.music-toggle.muted .bar { height: 3px; animation: none; opacity: 0.4; }
+
+.music-toggle.muted::after {
+  content: '✕';
+  position: absolute;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--color-rose);
+  bottom: 7px;
+  right: 7px;
+  line-height: 1;
+}
 
 @keyframes soundBars {
-  0% { height: 4px; }
+  0%   { height: 4px; }
   100% { height: 16px; }
 }
 
@@ -597,7 +604,7 @@ a {
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-.card-names span {
+.card-names span:not(.name-initial) {
   color: var(--color-gold-dark);
   font-size: 1.4rem;
 }
@@ -940,17 +947,7 @@ a {
   position: relative;
 }
 
-.hero-section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('images/floral-decoration.png') top center / contain no-repeat;
-  opacity: 0.15;
-  pointer-events: none;
-}
+
 
 .hero-pre-text {
   font-family: var(--font-heading);
@@ -970,6 +967,16 @@ a {
   line-height: 1.2;
   margin-bottom: 5px;
   text-shadow: 0 4px 30px rgba(201, 169, 110, 0.4);
+}
+
+.name-initial {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 1.2em;
+  line-height: 0.8;
+  display: inline-block;
+  color: inherit;
 }
 
 .hero-ampersand {
@@ -1017,6 +1024,7 @@ a {
     0 0 40px rgba(201, 169, 110, 0.25);
   margin-top: 36px;
   display: block;
+  margin-left: 1rem;
 }
 
 /* ===== COUNTDOWN SECTION ===== */

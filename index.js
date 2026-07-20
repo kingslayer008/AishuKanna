@@ -213,6 +213,9 @@
     envelopeWrapper.style.cursor = 'default';
     envelopeWrapper.style.transform = 'scale(1)';
 
+    // Start music on seal tap
+    startMusic();
+
     // PHASE 0: Instant feedback
     hapticFeedback([20, 40, 10, 30, 15]);
     shakeScreen(6, 350);
@@ -409,7 +412,6 @@
       const textEl = scrollIndicator.querySelector('.scroll-indicator-text');
       if (textEl) textEl.textContent = 'Scroll Down';
       scrollIndicator.classList.add('visible');
-      musicToggle.classList.add('visible');
     }, 300);
 
     setTimeout(() => {
@@ -557,61 +559,53 @@
   updateCountdown();
   setInterval(updateCountdown, 1000);
 
-  // ========== MUSIC TOGGLE ==========
-  let audioCtx = null;
-  let oscillatorNode = null;
-  let gainNode = null;
+  // ========== MUSIC (HTML Audio Element) ==========
+  const bgMusic = document.getElementById('bgMusic');
+  let musicStarted = false;
 
-  musicToggle.addEventListener('click', () => {
-    musicPlaying = !musicPlaying;
-    musicToggle.classList.toggle('playing', musicPlaying);
+  function startMusic() {
+    if (musicStarted) return;
+    musicStarted = true;
+    bgMusic.volume = 0.5;
+    bgMusic.muted = false; // ensure not muted
+    bgMusic.play().then(() => {
+      musicToggle.classList.add('playing');
+      musicToggle.classList.remove('muted');
+    }).catch(err => {
+      console.log("Audio play blocked or failed:", err);
+      musicStarted = false; // reset so we can try again
+    });
+  }
 
-    if (musicPlaying) {
-      startAmbientMusic();
+  // Toggle mute / unmute on button click
+  musicToggle.addEventListener('click', (e) => {
+    e.stopPropagation(); // prevent bubbling to document
+    if (!musicStarted) {
+      startMusic();
+      return;
+    }
+    
+    bgMusic.muted = !bgMusic.muted;
+    if (bgMusic.muted) {
+      musicToggle.classList.remove('playing');
+      musicToggle.classList.add('muted');
     } else {
-      stopAmbientMusic();
+      musicToggle.classList.add('playing');
+      musicToggle.classList.remove('muted');
+      if (bgMusic.paused) {
+        bgMusic.play().catch(() => {});
+      }
     }
   });
 
-  function startAmbientMusic() {
-    if (!audioCtx) {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-
-    const frequencies = [261.63, 329.63, 392.00];
-    const oscillators = [];
-
-    gainNode = audioCtx.createGain();
-    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-    gainNode.gain.linearRampToValueAtTime(0.03, audioCtx.currentTime + 2);
-    gainNode.connect(audioCtx.destination);
-
-    frequencies.forEach(freq => {
-      const osc = audioCtx.createOscillator();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      osc.connect(gainNode);
-      osc.start();
-      oscillators.push(osc);
-    });
-
-    oscillatorNode = oscillators;
-  }
-
-  function stopAmbientMusic() {
-    if (gainNode) {
-      gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1);
-      setTimeout(() => {
-        if (oscillatorNode) {
-          oscillatorNode.forEach(osc => {
-            try { osc.stop(); } catch (e) {}
-          });
-          oscillatorNode = null;
-        }
-      }, 1100);
-    }
-  }
-
+  // Start music on first click/tap anywhere on the page
+  const handleFirstInteraction = () => {
+    startMusic();
+    document.removeEventListener('click', handleFirstInteraction);
+    document.removeEventListener('touchstart', handleFirstInteraction);
+  };
+  document.addEventListener('click', handleFirstInteraction);
+  document.addEventListener('touchstart', handleFirstInteraction);
 
 
   // ========== WISHES API + PAGINATION ==========
