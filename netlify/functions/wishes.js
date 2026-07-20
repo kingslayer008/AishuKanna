@@ -24,7 +24,7 @@ function writeLocal(data) {
 }
 
 async function getStoreInstance() {
-  const isLocal = process.env.NETLIFY_DEV === 'true' || !process.env.AWS_LAMBDA_FUNCTION_NAME;
+  const isLocal = process.env.NETLIFY_DEV === 'true' || !process.env.SITE_ID;
   if (isLocal) return null;
 
   try {
@@ -37,19 +37,29 @@ async function getStoreInstance() {
 }
 
 async function readWishes(store) {
-  if (!store) return readLocal();
+  const isLocal = process.env.NETLIFY_DEV === 'true' || !process.env.SITE_ID;
+  if (isLocal) return readLocal();
+
+  if (!store) return [];
 
   try {
     const data = await store.get('all-wishes', { type: 'json' });
     return Array.isArray(data) ? data : [];
   } catch (e) {
+    console.error("Failed to read from Netlify Blobs:", e);
     return [];
   }
 }
 
 async function writeWishes(store, data) {
-  if (!store) {
+  const isLocal = process.env.NETLIFY_DEV === 'true' || !process.env.SITE_ID;
+  if (isLocal) {
     writeLocal(data);
+    return;
+  }
+
+  if (!store) {
+    console.error("No store available in production to write wishes");
     return;
   }
   await store.set('all-wishes', JSON.stringify(data));

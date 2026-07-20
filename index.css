@@ -3,20 +3,20 @@
 
 /* ===== CSS VARIABLES ===== */
 :root {
-  --color-bg: #0d0a07;
-  --color-cream: #faf3e8;
-  --color-gold: #c9a96e;
-  --color-gold-light: #e8d5a8;
-  --color-gold-dark: #8b7340;
-  --color-burgundy: #6b2040;
-  --color-burgundy-light: #8b3060;
-  --color-rose: #c77d8a;
-  --color-blush: #f0d5d5;
-  --color-deep-maroon: #3a0f1e;
+  --color-bg: #120e0a;
+  --color-cream: #ffffff;
+  --color-gold: #dfb76c;
+  --color-gold-light: #f7e8cc;
+  --color-gold-dark: #a3854b;
+  --color-burgundy: #8c2e53;
+  --color-burgundy-light: #ab4671;
+  --color-rose: #dc97a4;
+  --color-blush: #ffebed;
+  --color-deep-maroon: #4f1527;
   --color-text: #2c1810;
-  --color-text-light: #6b5b50;
+  --color-text-light: #9a887b;
   --color-white: #ffffff;
-  --color-overlay: rgba(13, 10, 7, 0.7);
+  --color-overlay: rgba(18, 14, 10, 0.7);
 
   --font-display: 'Great Vibes', cursive;
   --font-heading: 'Cormorant Garamond', serif;
@@ -1083,8 +1083,8 @@ a {
 }
 
 .couple-card {
-  background: linear-gradient(145deg, rgba(201, 169, 110, 0.05), rgba(201, 169, 110, 0.02));
-  border: 1px solid rgba(201, 169, 110, 0.15);
+  background: linear-gradient(145deg, rgba(223, 183, 108, 0.09), rgba(223, 183, 108, 0.04));
+  border: 1px solid rgba(223, 183, 108, 0.25);
   border-radius: 24px;
   padding: 40px 24px;
   text-align: center;
@@ -1278,8 +1278,8 @@ a {
 }
 
 .event-card {
-  background: linear-gradient(145deg, rgba(201, 169, 110, 0.08), rgba(201, 169, 110, 0.02));
-  border: 1px solid rgba(201, 169, 110, 0.2);
+  background: linear-gradient(145deg, rgba(223, 183, 108, 0.12), rgba(223, 183, 108, 0.04));
+  border: 1px solid rgba(223, 183, 108, 0.3);
   border-radius: 24px;
   overflow: hidden;
   margin-bottom: 30px;
@@ -1774,8 +1774,8 @@ a {
 }
 
 .wish-card {
-  background: rgba(201, 169, 110, 0.05);
-  border: 1px solid rgba(201, 169, 110, 0.12);
+  background: rgba(223, 183, 108, 0.08);
+  border: 1px solid rgba(223, 183, 108, 0.2);
   border-radius: 16px;
   padding: 20px;
   transition: var(--transition-smooth);
