@@ -321,26 +321,27 @@
     envelopeCard.classList.add('rising');
   }
 
-  // --- PHASE 4: Scroll trigger ---
+  // --- PHASE 4: Reveal main content directly ---
   function enableScrollTrigger() {
     const textEl = scrollIndicator.querySelector('.scroll-indicator-text');
-    if (textEl) textEl.textContent = 'Scroll to reveal';
+    if (textEl) textEl.textContent = 'Scroll or tap to view invitation';
     scrollIndicator.classList.add('visible');
 
     window.addEventListener('scroll', handleScrollTrigger, { passive: true });
     window.addEventListener('wheel', handleWheelTrigger, { passive: true });
     window.addEventListener('touchstart', handleTouchStart, { passive: true });
     window.addEventListener('touchmove', handleTouchTrigger, { passive: true });
+    window.addEventListener('click', handleScrollTrigger);
 
     document.body.style.overflow = 'auto';
   }
 
   function handleScrollTrigger() {
-    if (window.scrollY > 10) triggerExpandAndReveal();
+    triggerExpandAndReveal();
   }
 
   function handleWheelTrigger(e) {
-    if (e.deltaY > 10) triggerExpandAndReveal();
+    if (e.deltaY > 5) triggerExpandAndReveal();
   }
 
   function handleTouchStart(e) {
@@ -349,7 +350,7 @@
 
   function handleTouchTrigger(e) {
     const diffY = touchStartY - e.touches[0].clientY;
-    if (diffY > 20) triggerExpandAndReveal();
+    if (diffY > 10) triggerExpandAndReveal();
   }
 
   function triggerExpandAndReveal() {
@@ -360,63 +361,37 @@
     window.removeEventListener('wheel', handleWheelTrigger);
     window.removeEventListener('touchstart', handleTouchStart);
     window.removeEventListener('touchmove', handleTouchTrigger);
+    window.removeEventListener('click', handleScrollTrigger);
 
     scrollIndicator.classList.remove('visible');
     hapticFeedback([12]);
 
-    document.body.style.overflow = 'hidden'; // Disable scroll during transition!
-
-    expandCard();
-    setTimeout(() => fadeAndReveal(), 1000);
-  }
-
-  // --- PHASE 6: Expand card ---
-  function expandCard() {
-    const cardRect = envelopeCard.getBoundingClientRect();
-
-    envelopeCard.style.position = 'fixed';
-    envelopeCard.style.top = cardRect.top + 'px';
-    envelopeCard.style.left = cardRect.left + 'px';
-    envelopeCard.style.right = (window.innerWidth - cardRect.right) + 'px';
-    envelopeCard.style.bottom = (window.innerHeight - cardRect.bottom) + 'px';
-    envelopeCard.style.zIndex = '100';
-    envelopeCard.style.transform = 'translateY(0)';
-    envelopeCard.classList.remove('rising');
-
-    const cardContent = envelopeCard.querySelector('.card-content');
-    if (cardContent) {
-      cardContent.style.opacity = '0';
-      cardContent.style.transition = 'opacity 0.3s ease';
-    }
-
-    envelopeCard.offsetHeight;
-    envelopeCard.classList.add('expanding');
-
-    envelopeWrapper.style.transition = 'opacity 0.6s ease';
-    envelopeWrapper.style.opacity = '0';
-  }
-
-  // --- PHASE 7: Fade & reveal ---
-  function fadeAndReveal() {
-    envelopeCard.classList.add('fading');
-
-    setTimeout(() => {
-      const textEl = scrollIndicator.querySelector('.scroll-indicator-text');
-      if (textEl) textEl.textContent = 'Scroll Down';
-      scrollIndicator.classList.add('visible');
-    }, 300);
+    landingSection.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+    landingSection.style.opacity = '0';
+    landingSection.style.transform = 'scale(1.04)';
 
     setTimeout(() => {
       mainContent.classList.add('revealed');
+
+      // Immediately activate all hero section reveal elements so text & couple image are visible with the confetti
+      const heroSection = document.getElementById('heroSection');
+      if (heroSection) {
+        const heroReveals = heroSection.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+        heroReveals.forEach(el => el.classList.add('active'));
+      }
+
       startFloatingPetals();
       createConfetti();
-    }, 400);
+
+      const textEl = scrollIndicator.querySelector('.scroll-indicator-text');
+      if (textEl) textEl.textContent = 'Scroll Down';
+      scrollIndicator.classList.add('visible');
+    }, 250);
 
     setTimeout(() => {
       landingSection.classList.add('hide');
-      envelopeCard.style.display = 'none';
-      document.body.style.overflow = 'auto'; // Re-enable scrolling!
-    }, 1200);
+      document.body.style.overflow = 'auto';
+    }, 850);
   }
 
   // ========== CONFETTI ==========
@@ -620,7 +595,7 @@
     wishesList.innerHTML = '';
 
     try {
-      const res = await fetch(`/api/wishes?page=${page}&limit=${wishesPerPage}`);
+      const res = await fetch(`/api/wishes?page=${page}&limit=${wishesPerPage}&t=${Date.now()}`);
       const data = await res.json();
 
       wishesData = data.wishes || [];
@@ -740,11 +715,28 @@
 
       if (!res.ok) throw new Error('Failed to send');
 
+      const responseData = await res.json();
+      const newWish = responseData.wish;
+
       document.getElementById('wishName').value = '';
       document.getElementById('wishMessage').value = '';
 
-      currentPage = 1;
-      await fetchWishes(1);
+      // Optimistically update the UI instantly
+      if (newWish) {
+        wishesData.unshift(newWish);
+        if (wishesData.length > wishesPerPage) {
+          wishesData = wishesData.slice(0, wishesPerPage);
+        }
+        renderWishes();
+        
+        // Sync database in background after a short delay
+        setTimeout(() => {
+          fetchWishes(1);
+        }, 1200);
+      } else {
+        currentPage = 1;
+        await fetchWishes(1);
+      }
     } catch (err) {
       alert('Failed to send wish. Please try again.');
     } finally {
